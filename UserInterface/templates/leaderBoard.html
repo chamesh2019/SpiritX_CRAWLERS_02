@@ -1,0 +1,29 @@
+{% extends "UserBase.html" %} {% block content %}
+<div class="flex flex-col items-center w-screen">
+<h1 class="text-3xl p-5">Leaderboard</h1>
+<div class="overflow-x-auto m-6 w-full max-w-4xl">
+  <table class="table mx-auto">
+    <thead>
+    <tr>
+    <th>User Name</th>
+    <th>Points</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+
+      <tr class="{% if user.id == logged_in_user.id %} bg-blue-100 dark:bg-blue-900 {% else %}{% endif %}">
+        
+      <td>{{ user.name }}</td>
+      <td>{{ user.points }}</td>
+      
+
+    </tr>
+      
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+</div>
+
+{% endblock %}

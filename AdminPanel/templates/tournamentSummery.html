@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="w-full h-full flex justify-center items-center">
+    <div class="mt-10 card w-96 bg-base-200 shadow-sm">
+        <div class="card-body">
+            <h2 class="text-3xl font-bold">Tournament Summery</h2>
+            <ul class="mt-2 flex flex-col gap-2 text-s">
+                <li>
+                    <span> Total Runs : {{ total_runs }}</span>
+                </li>
+                <li>
+                    <span> Total Wickets : {{ total_wickets }}</span>
+                </li>
+                <li>
+                    <span> Highest Run Scorer : {{ highests_runs }}</span>
+                </li>
+                <li>
+                    <span> Highest Wickets Taker : {{ most_wickets }}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+
+{% endblock %}

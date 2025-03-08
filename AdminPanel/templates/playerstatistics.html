@@ -1,0 +1,110 @@
+{% extends "base.html" %} {% block content %}
+<div class="w-full flex justify-center align-center">
+  <div class="card mt-10 w-96 bg-base-200 shadow-sm">
+    <div class="card-body">
+      <h2 class="text-3xl font-bold">{{ player.name }}</h2>
+      <h4 class="text-xl font-bold">Player points: {{ player_points }}</h4>
+      <h4 class="text-xl font-bold">Player value: {{ player_value }}</h4>
+      <ul class="mt-6 flex flex-col gap-2 text-s">
+        <li>
+          <span> University : {{ player.university }}</span>
+        </li>
+        <li>
+          <span> Category : {{ player.category }}</span>
+        </li>
+        <li>
+          <span> Total Runs : {{ player.total_runs }}</span>
+        </li>
+        <li>
+          <span> Balls faced : {{ player.balls_faced }}</span>
+        </li>
+        <li>
+          <span> Innings Played : {{ player.innings_played }}</span>
+        </li>
+        <li>
+          <span> Wickets : {{ player.wickets }}</span>
+        </li>
+        <li>
+          <span> Over Bowled : {{ player.overs_bowled }}</span>
+        </li>
+        <li>
+          <span> Runs Conceded : {{ player.runs_given }}</span>
+        </li>
+      </ul>
+      <button
+        class="mt-4 btn btn-outline btn-info"
+        onclick="my_modal_3.showModal()"
+      >
+        Edit Info
+      </button>
+      <dialog id="my_modal_3" class="modal">
+        <form method="dialog" class="modal-backdrop">
+            <button>close</button>
+          </form>
+        <div class="modal-box w-85 h-120">
+            <h2 class="text-3xl font-bold">Edit Info</h2>
+            <form action="{% url "updatePlayer" player.id %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="player_id" value="{{ player.id }}" />
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">Name</legend>
+                    <input name="name" type="text" class="input focus:outline-none" placeholder="Player Name" value="{{ player.name }}" required />
+                </fieldset>
+
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">University</legend>
+                    <input name="university" type="text" class="input focus:outline-none" placeholder="Player University" value="{{ player.university }}" required />
+                </fieldset>
+
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">Category</legend>
+                    <select name="category" class="select" required>
+                        <option value="Batsman" {% if player.category == "Batsman" %}selected{% endif %}>Batsman</option>
+                        <option value="All-Rounder" {% if player.category == "All-Rounder" %}selected{% endif %}>All-Rounder</option>
+                        <option value="Bowler" {% if player.category == "Bowler" %}selected{% endif %}>Bowler</option>
+                      </select>
+                </fieldset>
+
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">Total Runs</legend>
+                    <input name="total_runs" type="number" class="input focus:outline-none" placeholder="Total Runs" value="{{ player.total_runs }}" required />
+                </fieldset>
+
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">Balls Faced</legend>
+                    <input name="balls_faced" min="0" type="number" class="input focus:outline-none" placeholder="Balls Faced" value="{{ player.balls_faced }}" required />
+                </fieldset>
+
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">Innings Played</legend>
+                    <input name="innings_played" min="0" type="number" class="input focus:outline-none" placeholder="Innings Played" value="{{ player.innings_played }}" required />
+                </fieldset>
+
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">Wickets</legend>
+                    <input name="wickets" min="0" type="number" class="input focus:outline-none" placeholder="Wickets" value="{{ player.wickets }}" required />
+                </fieldset>
+
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">Overs Bowled</legend>
+                    <input name="overs_bowled" min="0" type="number" class="input focus:outline-none" placeholder="Overs Bowled" value="{{ player.overs_bowled }}" required />
+                </fieldset>
+
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">Runs Given</legend>
+                    <input name="runs_given" min="0" type="number" class="input focus:outline-none" placeholder="Runs Given" value="{{ player.runs_given }}" required />
+                </fieldset>
+
+                <input type="submit" class="mt-4 btn btn-primary">
+            </form>
+        </div>
+      </dialog>
+    </div>
+  </div>
+</div>
+
+<script>
+  let;
+</script>
+
+{% endblock %}

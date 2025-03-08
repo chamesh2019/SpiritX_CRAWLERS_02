@@ -1,0 +1,110 @@
+{% extends "base.html" %} {% block content %}
+<button
+    class="btn btn-outline btn-primary ml-5 mt-2"
+    onclick="my_modal_3.showModal()"
+      >
+    Add Player
+      </button>
+      <dialog id="my_modal_3" class="modal">
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+      </form>
+    <div class="modal-box w-85 h-120">
+        <h2 class="text-3xl font-bold">Edit Info</h2>
+        <form action="{% url "addPlayer" %}" method="POST">
+        {% csrf_token %}
+        <fieldset class="fieldset">
+            <legend class="fieldset-legend">Name</legend>
+            <input name="name" type="text" class="input focus:outline-none" placeholder="Player Name" required/>
+        </fieldset>
+
+        <fieldset class="fieldset">
+            <legend class="fieldset-legend">University</legend>
+            <input name="university" type="text" class="input focus:outline-none" placeholder="Player University" required/>
+        </fieldset>
+
+        <fieldset class="fieldset">
+            <legend class="fieldset-legend">Category</legend>
+            <select name="category" class="select" required>
+            <option disabled selected>Pick a category</option>
+            <option value="Batsman">Batsman</option>
+            <option value="All-Rounder">All-Rounder</option>
+            <option value="Bowler">Bowler</option>
+              </select>
+        </fieldset>
+
+        <fieldset class="fieldset">
+            <legend class="fieldset-legend">Total Runs</legend>
+            <input name="total_runs" type="number" class="input focus:outline-none" placeholder="Total Runs" required min="0"/>
+        </fieldset>
+
+        <fieldset class="fieldset">
+            <legend class="fieldset-legend">Balls Faced</legend>
+            <input name="balls_faced" type="number" class="input focus:outline-none" placeholder="Balls Faced" required min="0"/>
+        </fieldset>
+
+        <fieldset class="fieldset">
+            <legend class="fieldset-legend">Innings Played</legend>
+            <input name="innings_played" type="number" class="input focus:outline-none" placeholder="Innings Played" required min="0"/>
+        </fieldset>
+
+        <fieldset class="fieldset">
+            <legend class="fieldset-legend">Wickets</legend>
+            <input name="wickets" type="number" class="input focus:outline-none" placeholder="Wickets" required min="0"/>
+        </fieldset>
+
+        <fieldset class="fieldset">
+            <legend class="fieldset-legend">Overs Bowled</legend>
+            <input name="overs_bowled" type="number" class="input focus:outline-none" placeholder="Overs Bowled" required min="0"/>
+        </fieldset>
+
+        <fieldset class="fieldset">
+            <legend class="fieldset-legend">Runs Given</legend>
+            <input name="runs_given" type="number" class="input focus:outline-none" placeholder="Runs Given" required min="0"/>
+        </fieldset>
+
+        <input type="submit" class="mt-4 btn btn-primary">
+        </form>
+    </div>
+      </dialog>
+    </div>
+
+<div class="overflow-x-auto m-6 flex justify-center">
+  <table class="table table-zebra">
+    <thead>
+      <tr>
+    <th>Player Id</th>
+    <th>Name</th>
+    <th>University</th>
+    <th>Category</th>
+    <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for player in players %}
+
+      <tr class="hover:bg-base-300">
+        
+      <td>{{ player.id }}</td>
+      <td>{{ player.name }}</td>
+      <td>{{ player.university }}</td>
+      <td>{{ player.category }}</td>
+        <td class="flex justify-center">
+        <form action="{% url "playerStatistics"  player.id %}" method="GET">
+            <button class="mr-1 btn btn-outline btn-info">Info</button>
+        </form>
+        <form action="{% url "deletePlayer" %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="player_id" value="{{ player.id }}">
+        <button class="btn btn-outline btn-warning">Delete</button>
+        </form>
+        </td>
+
+    </tr>
+      
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

@@ -1,0 +1,63 @@
+
+{% extends "userBase.html" %}
+
+{% block content %}
+<br>
+
+{% if total_points == "0.00" %}
+
+<div class="stats shadow bg-base-200 w-screen flex justify-center">
+  <div class="stat w-min">
+    <div class="stat-title">Available Budget</div>
+    <div class="stat-value text-primary">{{ user.budget }}</div>
+  </div>
+</div>
+
+{% else %}
+
+<div class="stats shadow bg-base-200 w-screen flex justify-center">
+  <div class="stat w-min">
+    <div class="stat-title">Total Points</div>
+    <div class="stat-value text-primary">{{ total_points }}</div>
+  </div>
+</div>
+{% endif %}
+
+<h1 class="text-3xl ml-10 p-5">Your Team ({{players|length}}/11 members)</h1>
+
+
+<div class="overflow-x-auto m-6 flex justify-center">
+  <table class="table table-zebra">
+    <thead>
+      <tr>
+        <th>Player Id</th>
+        <th>Name</th>
+        <th>University</th>
+        <th>Category</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for player in players %}
+
+      <tr class="hover:bg-base-300">
+
+        <td>{{ player.id }}</td>
+        <td>{{ player.name }}</td>
+        <td>{{ player.university }}</td>
+        <td>{{ player.category }}</td>
+        <td class="flex justify-center">
+          <form action="{% url "userPlayerStatistics" player.id %}" method="GET">
+            <button class="mr-1 btn btn-outline btn-info">Info</button>
+          </form>
+        </td>
+
+      </tr>
+
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+
+{% endblock %}

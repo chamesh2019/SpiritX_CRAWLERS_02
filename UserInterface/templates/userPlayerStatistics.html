@@ -1,0 +1,42 @@
+{% extends "userBase.html" %} {% block content %}
+<div class="w-full flex justify-center align-center">
+  <div class="card mt-10 w-96 bg-base-200 shadow-sm">
+    <div class="card-body">
+      <h2 class="text-3xl font-bold">{{ player.name }}</h2>
+      <h4 class="text-xl font-bold">Player points: {{ player_points }}</h4>
+      <h4 class="text-xl font-bold">Player value: {{ player_value }}</h4>
+      <ul class="mt-6 flex flex-col gap-2 text-s">
+        <li>
+          <span> University : {{ player.university }}</span>
+        </li>
+        <li>
+          <span> Category : {{ player.category }}</span>
+        </li>
+        <li>
+          <span> Total Runs : {{ player.total_runs }}</span>
+        </li>
+        <li>
+          <span> Balls faced : {{ player.balls_faced }}</span>
+        </li>
+        <li>
+          <span> Innings Played : {{ player.innings_played }}</span>
+        </li>
+        <li>
+          <span> Wickets : {{ player.wickets }}</span>
+        </li>
+        <li>
+          <span> Over Bowled : {{ player.overs_bowled }}</span>
+        </li>
+        <li>
+          <span> Runs Conceded : {{ player.runs_given }}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+  let;
+</script>
+
+{% endblock %}
