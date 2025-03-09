@@ -2,13 +2,17 @@ from django.shortcuts import redirect, render
 from AdminPanel.models import Player
 from UserInterface.models import Token
 
-
 def is_admin(view):
     def wrapper(request, *args, **kwargs):
         if request.session.get('token') is None:
             return redirect('logIn')
         
-        token = Token.objects.get(token=request.session.get('token'))
+        try:
+            token = Token.objects.get(token=request.session.get('token'))
+        except Token.DoesNotExist:
+            request.session.flush()
+            return redirect('logIn')
+        
         user = token.user
 
         if user.type != 'admin':
@@ -30,10 +34,8 @@ def playerView(request):
 @is_admin
 def playerStatistics(request, player_id):
     player = Player.objects.get(id=player_id)
-
     player_points = player.get_value()
     player_value = player.get_value()
-
     user = Token.objects.get(token=request.session.get('token')).user
 
     context = {
@@ -46,13 +48,11 @@ def playerStatistics(request, player_id):
 
 @is_admin
 def tournamentSummery(request):
-
     players = Player.objects.all()
     total_runs = [(player.id, player.total_runs) for player in players]
     total_wickets = [(player.id ,player.wickets) for player in players]
     highests_runs = max(total_runs, key=lambda x: x[1])
     most_wickets = max(total_wickets, key=lambda x: x[1])
-
     user = Token.objects.get(token=request.session.get('token')).user
 
     context = {
@@ -92,7 +92,6 @@ def updatePlayer(request, player_id):
 
 @is_admin
 def addPlayer(request):
-
     player_data = {
         'name': request.POST.get('name'),
         'university': request.POST.get('university'),

@@ -31,8 +31,8 @@ SpiritX CRAWLERS is a comprehensive Django-based web application designed to man
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/yourusername/SpiritX_CRAWLERS.git
-    cd SpiritX_CRAWLERS
+    git clone https://github.com/chamesh2019/SpiritX_CRAWLERS_02.git
+    cd SpiritX_CRAWLERS_02
     ```
 
 2. Create and activate a virtual environment:

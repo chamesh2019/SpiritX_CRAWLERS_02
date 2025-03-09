@@ -8,16 +8,19 @@ from UserInterface.models import EndUser, Token
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
-
 def is_logged_in(view):
     def wrapper(request, *args, **kwargs):
         if request.session.get('token') is None:
             return redirect('logIn')
 
+        try:
+            token = Token.objects.get(token=request.session.get('token'))
+        except Token.DoesNotExist:
+            request.session.flush()
+            return redirect('logIn')
 
         return view(request, *args, **kwargs)
     return wrapper
-
 
 @is_logged_in
 def UserInfo(request, key=None):
@@ -143,7 +146,6 @@ def AddPlayertoTeam(request):
     else:
         total_points = 0
 
-
     context = {
         'players': teamPlayers,
         'availablePlayers': otherPlayers,
@@ -153,7 +155,6 @@ def AddPlayertoTeam(request):
     }
 
     return render(request, 'userPlayerView.html', context)
-
 
 def LogIn(request):
     if request.method == 'POST':
@@ -219,10 +220,8 @@ def leaderBoard(request):
 @is_logged_in
 def userPlayerStatistics(request, player_id):
     player = Player.objects.get(id=player_id)
-
     player_points = player.get_points()
     player_value = player.get_value()
-
     user = Token.objects.get(token=request.session.get('token')).user
 
     context = {
@@ -230,14 +229,12 @@ def userPlayerStatistics(request, player_id):
         'player_points': f'{player_points:.2f}',
         "player_value": player_value,
         'user': user.type
-
     }
     return render(request, 'userPlayerStatistics.html', context)
 
 @is_logged_in
 def userBudget(request):
     user = Token.objects.get(token=request.session.get('token')).user
-
     players = user.players.all()
     for player in players:
         player.price = player.get_value()
