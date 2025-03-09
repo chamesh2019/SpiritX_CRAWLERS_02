@@ -2,15 +2,24 @@
 
 ## Overview
 
-SpiritX CRAWLERS is a Django-based web application designed to manage and display cricket player statistics, tournaments, and user interactions. The application includes an admin panel for managing players and a user interface for end-users to view and manage their teams.
+SpiritX CRAWLERS is a comprehensive Django-based web application designed to manage and display cricket player statistics, tournaments, and user interactions. The application includes an admin panel for managing players and a user interface for end-users to view and manage their teams. Additionally, it features real-time chat functionality and AI-based strategic suggestions.
 
 ## Features
 
-- Admin Panel for managing players
-- User Interface for managing user teams
-- Player statistics and tournament summaries
-- User authentication and registration
-- Leaderboard and budget overview for users
+### Admin Panel
+- **Player Management**: Add, update, and delete player profiles.
+- **Tournament Summary**: View total runs, total wickets, highest run scorer, and highest wicket-taker.
+
+### User Interface
+- **User Registration and Login**: Secure user authentication and registration.
+- **Team Management**: Add and remove players from the user's team within budget constraints.
+- **Player Statistics**: View detailed statistics of individual players.
+- **Leaderboard**: Real-time leaderboard ranking users based on their team points.
+- **Budget Overview**: Track user budget and total spent on players.
+
+### Real-Time Chat
+- **WebSocket Integration**: Real-time chat interface for user interactions.
+- **AI-Based Suggestions**: AI assistant providing strategic team selection advice based on player statistics.
 
 ## Prerequisites
 
@@ -43,6 +52,7 @@ SpiritX CRAWLERS is a Django-based web application designed to manage and displa
     ```
     SECRET_KEY='your-secret-key'
     DEBUG=True
+    GEMINI_API_KEY='your-gemini-api-key'
     ```
 
 5. Apply the migrations:
@@ -55,25 +65,29 @@ SpiritX CRAWLERS is a Django-based web application designed to manage and displa
     python import_data.py
     ```
 
-7. Run the development server:
+7. Run the development server (uses daphne):
     ```sh
-    python manage.py runserver
+    daphne -p 8000 Spirit11.asgi:application
     ```
 
 ## Usage
 
 ### Admin Panel
 
-- **Player Management**: Add, update, and delete players.
-- **Tournament Summary**: View total runs, total wickets, highest run scorer, and highest wicket-taker.
+- **Player Management**: Navigate to `/players/` to add, update, or delete players.
+- **Tournament Summary**: View the tournament summary at `/players/tournamentSummery/`.
 
 ### User Interface
 
-- **User Registration and Login**: Register new users and log in existing users.
-- **Team Management**: Add and remove players from the user's team.
-- **Player Statistics**: View detailed statistics of individual players.
-- **Leaderboard**: View the leaderboard of users based on their team points.
-- **Budget Overview**: View the user's budget and total spent on players.
+- **User Registration and Login**: Register at `/users/register/` and log in at `/users/login/`.
+- **Team Management**: Manage your team at `/users/editteam/`.
+- **Player Statistics**: View player statistics at `/users/player/<int:player_id>/`.
+- **Leaderboard**: View the leaderboard at `/users/leaderboard/`.
+- **Budget Overview**: View your budget overview at `/users/budget/`.
+
+### Real-Time Chat
+
+- **Chat Interface**: Access the chat interface at `/spiriter/` for real-time interactions and AI-based suggestions.
 
 ## API Endpoints
 
@@ -94,7 +108,6 @@ SpiritX CRAWLERS is a Django-based web application designed to manage and displa
 - `POST /users/editteam/`: Add or remove players from the user's team.
 - `GET /users/leaderboard/`: View the leaderboard.
 - `GET /users/budget/`: View the user's budget overview.
-
 
 ## License
 
