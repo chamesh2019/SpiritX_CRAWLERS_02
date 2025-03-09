@@ -5,13 +5,16 @@ import json
 
 from AdminPanel.models import Player
 from UserInterface.models import EndUser, Token
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 
 
 def is_logged_in(view):
     def wrapper(request, *args, **kwargs):
         if request.session.get('token') is None:
             return redirect('logIn')
-        
+
+
         return view(request, *args, **kwargs)
     return wrapper
 
@@ -35,6 +38,31 @@ def UserInfo(request, key=None):
 
     return render(request, 'UserView.html', context)
 
+def update_leaderboard(request):
+    users = EndUser.objects.all()
+
+    for user in users:
+        user.points = f"{sum([player.get_points() for player in user.players.all()]):.2f}"
+
+    user = Token.objects.get(token=request.session.get('token')).user
+    
+    users = sorted(users, key=lambda x: x.points, reverse=True)
+
+    # remove users less than 11 players
+    users = [user for user in users if user.players.count() == 11]
+
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        'websocket_group',
+        {
+            'type': 'send_message',
+            'message': json.dumps({
+                'message': 'leaderboard',
+                'leaderboard': [{'id': user.id,'name': user.name, 'points': user.points} for user in users]
+            })
+        }
+    )
+
 @is_logged_in
 def AddPlayertoTeam(request):
     if request.session.get('token') is None:
@@ -53,11 +81,17 @@ def AddPlayertoTeam(request):
                 user.players.add(player)
                 user.budget -= player.get_value()
                 user.save()
+
+                if user.players.count() == 11:
+                    update_leaderboard(request)
         else:
             if player in user.players.all():
                 user.players.remove(player)
                 user.budget += player.get_value()
                 user.save()
+
+                if user.players.count() == 10:
+                    update_leaderboard(request)
 
         teamPlayers = user.players.all()
         for player in teamPlayers:
@@ -75,9 +109,10 @@ def AddPlayertoTeam(request):
 
         if len(teamPlayers) == 11:
             total_points = sum([player.get_points() for player in teamPlayers])
+
         else:
             total_points = 0
-
+        
         print(teamPlayers)
         context = {
             'players': teamPlayers,

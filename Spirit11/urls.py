@@ -8,4 +8,5 @@ urlpatterns = [
     path('players/', include('AdminPanel.urls')),
     path('users/', include('UserInterface.urls')),
     path('', lambda request: redirect('users/')),
+    path('spiriter/', include('Spiriter.urls')),
 ]

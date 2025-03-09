@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-DEBUG = True
+DEBUG = os.getenv('DEBUG')
 
 ALLOWED_HOSTS = []
 
@@ -20,9 +20,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'channels',
     'AdminPanel',
     'UserInterface',
+    'Spiriter',
 ]
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -52,10 +56,17 @@ TEMPLATES = [
     },
 ]
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
+
 SETTINGS_PATH = os.path.dirname(os.path.dirname(__file__))
 
 
-WSGI_APPLICATION = 'Spirit11.wsgi.application'
+# WSGI_APPLICATION = 'Spirit11.wsgi.application'
+ASGI_APPLICATION = 'Spirit11.asgi.application'
 
 DATABASES = {
     'default': {

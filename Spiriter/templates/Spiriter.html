@@ -1,0 +1,72 @@
+{% extends "userBase.html" %}
+{% block content %}
+    <div class="container mx-auto px-4 py-6 max-w-md">
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-title bg-primary text-primary-content p-4 justify-center">
+                <h1 class="text-xl">Spirit 11 Spiriter Chat</h1>
+            </div>
+            
+            <div class="card-body p-0">
+                <div class="h-96 overflow-y-auto p-4 flex flex-col gap-2" id="messageArea">
+                    <!-- Messages will appear here -->
+                </div>
+                
+                <div class="flex p-4 gap-2 border-t border-base-300">
+                    <input type="text" id="messageInput" placeholder="Type a message..." 
+                           class="input input-bordered flex-grow" />
+                    <button onclick="sendMessage()" id="sendButton" class="btn btn-primary">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>        
+        const socket = new WebSocket('ws://' + window.location.host + '/ws/chat/{{ endUser.id }}/');
+
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+            
+            if (message) {
+                addMessageToUI(message, 'sent');
+                
+                socket.send(JSON.stringify({
+                    'message': message
+                }));
+                
+                // Clear input
+                messageInput.value = '';                
+            }
+        }
+        
+        function addMessageToUI(message, type) {
+            const messageArea = document.getElementById('messageArea');
+            const messageElement = document.createElement('div');
+            
+            if (type === 'sent') {
+                messageElement.className = 'chat chat-end';
+                messageElement.innerHTML = `<div class="chat-bubble chat-bubble-primary">${message}</div>`;
+            } else {
+                messageElement.className = 'chat chat-start';
+                messageElement.innerHTML = `<div class="chat-bubble">${message}</div>`;
+            }
+            
+            messageArea.appendChild(messageElement);
+            messageArea.scrollTop = messageArea.scrollHeight;
+        }
+        
+        // Update the onmessage handler to display received messages
+        socket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            addMessageToUI(data.response, 'received');
+            console.log(data);
+        };
+        
+        // Allow sending message with Enter key
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+{% endblock %}
