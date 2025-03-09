@@ -1,28 +1,50 @@
 from django.shortcuts import redirect, render
 from AdminPanel.models import Player
+from UserInterface.models import Token
 
-# Create your views here.
+
+def is_admin(view):
+    def wrapper(request, *args, **kwargs):
+        if request.session.get('token') is None:
+            return redirect('logIn')
+        
+        token = Token.objects.get(token=request.session.get('token'))
+        user = token.user
+
+        if user.type != 'admin':
+            return redirect('userView')
+        
+        return view(request, *args, **kwargs)
+    return wrapper
+
+@is_admin
 def playerView(request):
     players = Player.objects.all()
+    user = Token.objects.get(token=request.session.get('token')).user
     context = {
-        'players': players
+        'players': players,
+        'user': user.type
     }
     return render(request, 'playerView.html', context)
 
+@is_admin
 def playerStatistics(request, player_id):
     player = Player.objects.get(id=player_id)
 
     player_points = player.get_value()
     player_value = player.get_value()
 
+    user = Token.objects.get(token=request.session.get('token')).user
+
     context = {
         'player': player,
         'player_points': f'{player_points:.2f}',
-        "player_value": player_value
-
+        "player_value": player_value,
+        'user': user.type
     }
     return render(request, 'playerStatistics.html', context)
 
+@is_admin
 def tournamentSummery(request):
 
     players = Player.objects.all()
@@ -31,21 +53,26 @@ def tournamentSummery(request):
     highests_runs = max(total_runs, key=lambda x: x[1])
     most_wickets = max(total_wickets, key=lambda x: x[1])
 
+    user = Token.objects.get(token=request.session.get('token')).user
+
     context = {
         "total_runs": sum([x[1] for x in total_runs]),
         "total_wickets": sum([x[1] for x in total_wickets]),
         "highests_runs": f"{Player.objects.get(id=highests_runs[0]).name} ({highests_runs[1]})",
         "most_wickets": f"{Player.objects.get(id=most_wickets[0]).name} ({most_wickets[1]})",
+        'user': user.type
     }
 
     return render(request, 'tournamentSummery.html', context)
 
+@is_admin
 def deletePlayer(request):
     player_id = request.POST.get('player_id')
     player = Player.objects.get(id=player_id)
     player.delete()
     return redirect('playerView')
 
+@is_admin
 def updatePlayer(request, player_id):
     player_id = request.POST.get('player_id')
     player = Player.objects.get(id=player_id)
@@ -63,6 +90,7 @@ def updatePlayer(request, player_id):
 
     return redirect('playerStatistics', player_id=player_id)
 
+@is_admin
 def addPlayer(request):
 
     player_data = {

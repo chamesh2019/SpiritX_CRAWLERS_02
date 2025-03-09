@@ -93,11 +93,7 @@
         <form action="{% url "playerStatistics"  player.id %}" method="GET">
             <button class="mr-1 btn btn-outline btn-info">Info</button>
         </form>
-        <form action="{% url "deletePlayer" %}" method="POST">
-        {% csrf_token %}
-        <input type="hidden" name="player_id" value="{{ player.id }}">
-        <button class="btn btn-outline btn-warning">Delete</button>
-        </form>
+        
         </td>
 
     </tr>

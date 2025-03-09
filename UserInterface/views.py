@@ -6,7 +6,17 @@ import json
 from AdminPanel.models import Player
 from UserInterface.models import EndUser, Token
 
-# Create your views here.
+
+def is_logged_in(view):
+    def wrapper(request, *args, **kwargs):
+        if request.session.get('token') is None:
+            return redirect('logIn')
+        
+        return view(request, *args, **kwargs)
+    return wrapper
+
+
+@is_logged_in
 def UserInfo(request, key=None):
     if request.session.get('token') is None:
         return redirect('logIn')
@@ -17,13 +27,15 @@ def UserInfo(request, key=None):
     total_points = sum([player.get_points() for player in players]) if len(players) == 11 else 0
 
     context = {
-        'user': user,
+        'endUser': user,
         'players': players,
-        'total_points': f"{total_points:.2f}"
+        'total_points': f"{total_points:.2f}",
+        'user': user.type
     }
 
     return render(request, 'UserView.html', context)
 
+@is_logged_in
 def AddPlayertoTeam(request):
     if request.session.get('token') is None:
         return redirect('logIn')
@@ -70,8 +82,9 @@ def AddPlayertoTeam(request):
         context = {
             'players': teamPlayers,
             'availablePlayers': otherPlayers,
-            'user': user,
-            'total_points': f"{total_points:.2f}"
+            'endUser': user,
+            'total_points': f"{total_points:.2f}",
+            'user': user.type
         }
 
         return render(request, 'userPlayerView.html', context)
@@ -99,9 +112,9 @@ def AddPlayertoTeam(request):
     context = {
         'players': teamPlayers,
         'availablePlayers': otherPlayers,
-        'user': user,
-        'total_points': f"{total_points:.2f}"
-
+        'endUser': user,
+        'total_points': f"{total_points:.2f}",
+        'user': user.type
     }
 
     return render(request, 'userPlayerView.html', context)
@@ -112,11 +125,17 @@ def LogIn(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-        if username == 'admin' and password == 'admin':
+        try:
             user = EndUser.objects.get(name=username)
-            token = Token.objects.update_or_create(user=user, token=str(uuid.uuid4()))
-            request.session['token'] = token[0].token
-            return redirect('userView')
+            if user.password == password:  # In production, use proper password hashing
+                token = Token.objects.update_or_create(user=user, token=str(uuid.uuid4()))
+                request.session['token'] = token[0].token
+                return redirect('userView')
+            else:
+                return render(request, 'LogIn.html', {'error': 'Invalid password'})
+            
+        except EndUser.DoesNotExist:
+            return render(request, 'LogIn.html', {'error': 'User does not exist'})
         else:
             return render(request, 'LogIn.html', {'error': 'Invalid Credentials'})
         
@@ -137,14 +156,18 @@ def Register(request):
 
     return render(request, 'Register.html')
 
+@is_logged_in
 def LogOut(request):
     request.session.flush()
     return redirect('logIn')
 
+@is_logged_in
 def leaderBoard(request):
     users = EndUser.objects.all()
     for user in users:
         user.points = f"{sum([player.get_points() for player in user.players.all()]):.2f}"
+
+    user = Token.objects.get(token=request.session.get('token')).user
     
     users = sorted(users, key=lambda x: x.points, reverse=True)
 
@@ -153,24 +176,30 @@ def leaderBoard(request):
 
     context = {
         'users': users,
-        'logged_in_user': Token.objects.get(token=request.session.get('token')).user
+        'logged_in_user': user,
+        'user': user.type
     }
     return render(request, 'leaderBoard.html', context)
 
+@is_logged_in
 def userPlayerStatistics(request, player_id):
     player = Player.objects.get(id=player_id)
 
     player_points = player.get_points()
     player_value = player.get_value()
 
+    user = Token.objects.get(token=request.session.get('token')).user
+
     context = {
         'player': player,
         'player_points': f'{player_points:.2f}',
-        "player_value": player_value
+        "player_value": player_value,
+        'user': user.type
 
     }
     return render(request, 'userPlayerStatistics.html', context)
 
+@is_logged_in
 def userBudget(request):
     user = Token.objects.get(token=request.session.get('token')).user
 
@@ -182,7 +211,8 @@ def userBudget(request):
         'players': players,
         'user': user,
         'total_spent': sum([player.get_value() for player in players]),
-        'remaining': user.budget 
+        'remaining': user.budget,
+        'user': user.type
     }
 
     return render(request, 'budgetView.html', context)

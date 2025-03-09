@@ -37,10 +37,16 @@
       >
         Edit Info
       </button>
+      <form action="{% url "deletePlayer" %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="player_id" value="{{ player.id }}">
+        <button class="mt-1 btn btn-outline btn-warning w-full">Delete</button>
+        </form>
       <dialog id="my_modal_3" class="modal">
         <form method="dialog" class="modal-backdrop">
             <button>close</button>
           </form>
+          
         <div class="modal-box w-85 h-120">
             <h2 class="text-3xl font-bold">Edit Info</h2>
             <form action="{% url "updatePlayer" player.id %}" method="POST">

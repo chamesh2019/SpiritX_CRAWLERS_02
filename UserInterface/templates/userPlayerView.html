@@ -5,7 +5,7 @@
 <div class="stats shadow bg-base-200 w-screen flex justify-center">
   <div class="stat w-min">
     <div class="stat-title">Available Budget</div>
-    <div class="stat-value text-primary">{{ user.budget }}</div>
+    <div class="stat-value text-primary">{{ endUser.budget }}</div>
   </div>
 </div>
 
@@ -42,6 +42,9 @@
         <td>{{ player.price }}</td>
 
         <td class="flex justify-center">
+          <form action="{% url "userPlayerStatistics" player.id %}" method="GET">
+            <button class="mr-1 btn btn-outline btn-info">Info</button>
+          </form>
           <form action="{% url "editTeam" %}" method="POST">
             {% csrf_token %}
             <input type="hidden" name="add" value="0">
@@ -93,7 +96,10 @@
         <td>{{ player.category }}</td>
         <td>{{ player.price }}</td>
         <td class="flex justify-center">
-          {% if user.budget < player.price or players|length >= 11 %}
+          <form action="{% url "userPlayerStatistics" player.id %}" method="GET">
+            <button class="mr-1 btn btn-outline btn-info">Info</button>
+          </form>
+          {% if endUser.budget < player.price or players|length >= 11 %}
             <button class="mr-1 btn btn-outline btn-info" disabled>
                 {% if players|length >= 11 %}
                 Max Players Reached
@@ -102,6 +108,7 @@
                 {% endif %}
             </button>
           {% else %}
+          
             <form action="{% url "editTeam" %}" method="POST">
               {% csrf_token %}
               <input type="hidden" name="add" value="1">
