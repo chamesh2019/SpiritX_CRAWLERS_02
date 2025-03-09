@@ -3,8 +3,6 @@ from google import genai
 from google.genai import types
 from dotenv import load_dotenv
 
-load_dotenv()
-
 def generate_dataset(players, user):
     
     dataset = ""
@@ -50,6 +48,7 @@ def generate_dataset(players, user):
 
 
 def generate_content(contents, players, user):
+    load_dotenv()
     client = genai.Client(api_key=os.getenv("GENAI_API_KEY"))
     response = client.models.generate_content(
         model="gemini-2.0-flash", contents=contents,
