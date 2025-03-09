@@ -58,3 +58,13 @@ user.save()
 
 user = EndUser.objects.create(name='admin', type='admin', password='admin')
 user.save()
+
+default_message = """
+Successfully loaded the default data into the database.
+The default data includes:
+- players with their statistics
+- an end user with a team of 11 players - spiritx_2025:SpiritX@2025
+- an admin user - admin:admin
+"""
+
+print(default_message)
