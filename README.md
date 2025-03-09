@@ -47,65 +47,18 @@ SpiritX CRAWLERS is a Django-based web application designed to manage and displa
 
 5. Apply the migrations:
     ```sh
-    python [manage.py](http://_vscodecontentref_/0) migrate
+    python manage.py migrate
     ```
 
 6. Load sample data (optional):
     ```sh
-    python [import_data.py](http://_vscodecontentref_/1)
+    python import_data.py
     ```
 
 7. Run the development server:
     ```sh
-    python [manage.py](http://_vscodecontentref_/2) runserver
+    python manage.py runserver
     ```
-
-## Project Structure
-SpiritX_CRAWLERS/
-├── AdminPanel/
-│   ├── migrations/
-│   ├── templates/
-│   │   ├── base.html
-│   │   ├── playerView.html
-│   │   ├── playerStatistics.html
-│   │   ├── tournamentSummery.html
-│   ├── __init__.py
-│   ├── admin.py
-│   ├── apps.py
-│   ├── models.py
-│   ├── tests.py
-│   ├── urls.py
-│   ├── views.py
-├── UserInterface/
-│   ├── migrations/
-│   ├── templates/
-│   │   ├── base.html
-│   │   ├── Login.html
-│   │   ├── Register.html
-│   │   ├── UserView.html
-│   │   ├── budgetView.html
-│   │   ├── leaderBoard.html
-│   │   ├── userPlayerStatistics.html
-│   │   ├── userPlayerView.html
-│   ├── __init__.py
-│   ├── admin.py
-│   ├── apps.py
-│   ├── models.py
-│   ├── tests.py
-│   ├── urls.py
-│   ├── views.py
-├── Spirit11/
-│   ├── __init__.py
-│   ├── asgi.py
-│   ├── settings.py
-│   ├── urls.py
-│   ├── wsgi.py
-├── .env
-├── db.sqlite3
-├── import_data.py
-├── manage.py
-├── requirements.txt
-└── sample_data.csv
 
 ## Usage
 
@@ -142,14 +95,6 @@ SpiritX_CRAWLERS/
 - `GET /users/leaderboard/`: View the leaderboard.
 - `GET /users/budget/`: View the user's budget overview.
 
-## Contributing
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature-branch`).
-3. Make your changes.
-4. Commit your changes (`git commit -m 'Add new feature'`).
-5. Push to the branch (`git push origin feature-branch`).
-6. Create a new Pull Request.
 
 ## License
 
