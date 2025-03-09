@@ -34,7 +34,7 @@ print("CSV data has been loaded into the Django database.")
 
 EndUser.objects.all().delete()
 
-user = EndUser.objects.create(name='admin', type='admin', password='admin')
+user = EndUser.objects.create(name='spiritx_2025', type='user', password='SpiritX@2025')
 user.save()
 
 sample_player_names = [
@@ -54,4 +54,7 @@ sample_player_names = [
 player_set = Player.objects.filter(name__in=sample_player_names)
 user.players.set(player_set)
 user.budget = user.budget - sum([player.get_value() for player in player_set])
+user.save()
+
+user = EndUser.objects.create(name='admin', type='admin', password='admin')
 user.save()

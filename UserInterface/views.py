@@ -101,7 +101,6 @@ def AddPlayertoTeam(request):
             player.price = player.get_value()
 
         filterType = request.GET.get('category')
-        print(filterType)
         if filterType is not None:
             otherPlayers = Player.objects.filter(category=filterType).exclude(id__in=[player.id for player in teamPlayers])
         else:
@@ -116,7 +115,6 @@ def AddPlayertoTeam(request):
         else:
             total_points = 0
         
-        print(teamPlayers)
         context = {
             'players': teamPlayers,
             'availablePlayers': otherPlayers,
@@ -132,7 +130,6 @@ def AddPlayertoTeam(request):
         player.price = player.get_value()
 
     filterType = request.GET.get('category')
-    print(filterType)
     if filterType is not None:
         otherPlayers = Player.objects.filter(category=filterType).exclude(id__in=[player.id for player in teamPlayers])
     else:
